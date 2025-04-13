@@ -1,4 +1,4 @@
-from arg_parser import get_args
+from src.utils.parse_args import get_args
 
 def run_crawler(seed_file, limit, debug=False):
     if debug:
