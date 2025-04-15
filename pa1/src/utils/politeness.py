@@ -7,12 +7,18 @@ DEFAULT_CRAWL_DELAY = 0.1
 
 robots_cache: dict = {}
 
-def can_crawl(url: str):
+def can_crawl(url: str) -> tuple[bool, float]:
     parsed: ParseResult = urlparse(url)
-    base_url = parsed.netloc
+    base_url = f"{parsed.scheme}://{parsed.netloc}"
+    
+    # print(f"can crawl: {url}, urlJoin: {urljoin(base_url, "/robots.txt")}")
     
     if base_url not in robots_cache:
-        robots_txt = requests.get(urljoin(base_url, "/robots.txt"))
+        response = requests.get(urljoin(base_url, "/robots.txt"), timeout=5)
+        if 400 <= response.status_code < 600:
+            return True, DEFAULT_CRAWL_DELAY
+        # response.raise_for_status() # vou assumir que se n tem 'e valido
+        robots_txt = response.text
         rp = Protego.parse(robots_txt)
         robots_cache[base_url] = rp
     else:
@@ -25,12 +31,18 @@ def can_crawl(url: str):
 
 last_request: dict = {}
 
-def wait_if_needed(url: str, crawl_delay: int):
+def wait_if_needed(url: str, crawl_delay: float):
     parsed: ParseResult = urlparse(url)
     base_url = parsed.netloc
     
     if base_url in last_request:
         now = time.time()
-        if now - last_request[base_url] < crawl_delay:
-            time.sleep(crawl_delay - now  - last_request[base_url])
+        elapsed = now - last_request[base_url]
+        if elapsed < crawl_delay:
+            time.sleep(max(0, crawl_delay - elapsed)) # max 0 to avoid negative sleep time
     last_request[base_url] = time.time()
+
+
+if __name__ == "__main__":
+    url = "https://grupoglobo.globo.com/"
+    print(can_crawl(url))

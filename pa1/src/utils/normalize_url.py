@@ -25,3 +25,6 @@ def normalize_url(url: str) -> str:
 
     # remover barra no comeco
     return normalized.lstrip('/')
+
+if __name__ == "__main__":
+    print(normalize_url("https://www.api.ciano.io/?id=10&ad=True"), normalize_url("https://ciano.io/olha-aqui/?ad=True&id=10&"))

@@ -1,26 +1,16 @@
 from src.utils.parse_args import get_args
+from src.crawler import Crawler
 
-def run_crawler(seed_file, limit, debug=False):
-    if debug:
-        print(f"Iniciando crawler com limite de {limit} páginas...")
-
-    # Carrega os seeds do arquivo
+def run_crawler(seed_file, limit, debug, threads=16):
     with open(seed_file, 'r') as f:
         seeds = [line.strip() for line in f if line.strip()]
-    
-    if debug:
-        print(f"Seeds carregadas: {seeds}")
-
-    # Aqui você colocaria a lógica do crawler
-    # ...
+    crawler = Crawler(seeds, limit, debug, threads)
+    crawler.run()
 
 def main():
     args = get_args()
-
-    if args.debug:
-        print("Modo Debug Ativado")
-        print(f"Arquivo de seeds: {args.seeds}")
-        print(f"Limite de páginas: {args.limit}")
+    
+    print(f"Seeds file: {args.seeds}, limit: {args.limit}, debug: {args.debug}\n")
 
     run_crawler(seed_file=args.seeds, limit=args.limit, debug=args.debug)
 
