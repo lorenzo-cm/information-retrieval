@@ -4,3 +4,5 @@
 __pycache__
 .mypy_cache
 pa1_env
+*.zip
+*.out

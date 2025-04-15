@@ -1,7 +1,7 @@
 from src.utils.parse_args import get_args
 from src.crawler import Crawler
 
-def run_crawler(seed_file, limit, debug, threads=16):
+def run_crawler(seed_file, limit, debug, threads=32):
     with open(seed_file, 'r') as f:
         seeds = [line.strip() for line in f if line.strip()]
     crawler = Crawler(seeds, limit, debug, threads)

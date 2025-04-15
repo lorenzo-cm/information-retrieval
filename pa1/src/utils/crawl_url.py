@@ -1,10 +1,7 @@
-from queue import Queue
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 from urllib.parse import ParseResult, urlparse, urljoin
 import requests
 import time
-
-from src.utils.normalize_url import normalize_url
 
 # { "URL": " https :// g1. globo .com/",
 # " Title ": "G1 - O portal de not´ı cias da Globo ",
@@ -48,25 +45,43 @@ def _extract_links(soup: BeautifulSoup, url: str) -> tuple[set[str], set[str]]:
     
     for tag in soup.find_all('a', href=True):
         href: str = tag['href'] # type: ignore
+        href_parsed = urlparse(href)
         
-        if href.startswith(('mailto:', 'javascript:', '#', 'tel:')):
+        # remover strings vazias e strings somente com / 
+        # ou que comecam com # que traduziriam ambas no proprio link        
+        if not href.strip() or href.strip() == '/' or href.startswith('#'):
             continue
         
-        if href.strip() == '/':
+        #- //meta.ai -> https://meta.ai
+        if href.startswith('//'):
+            href = "https:" + href
+        
+        # /search -> https://google.com/search
+        elif href.startswith('/'):
+            href = urljoin(base_url, href)
+        
+        # spotify:// , javascript:, mail:
+        if href_parsed.scheme and href_parsed.scheme not in ['http', 'https', '', ' ']:
             continue
         
-        elif(href.startswith('/')):
-            inlinks.add(urljoin(base_url, href))
-            
-        else:
-            if normalize_url(url) in normalize_url(href):
+        # https://google.com
+        elif href.startswith('http'):
+            href_parsed = urlparse(href)
+            if parsed.hostname == href_parsed.hostname:
                 inlinks.add(href)
             else:
                 outlinks.add(href)
-            
+        
+        # search -> https://google.com/search
+        else:
+            href = urljoin(base_url, href)
+            inlinks.add(urljoin(base_url, href))
+        
     return inlinks, outlinks
         
     
 if __name__ == "__main__":
-    url = 'https://ciano.io'
-    html, inlinks, outlinks = crawl(url, True)
+    
+    url = 'https://assinecoquetel.com.br/'
+    html, inlinks, outlinks = crawl(url, False)
+    

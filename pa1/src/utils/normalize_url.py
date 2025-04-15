@@ -26,5 +26,31 @@ def normalize_url(url: str) -> str:
     # remover barra no comeco
     return normalized.lstrip('/')
 
+
+ccTLDs = {
+    'br', 'uk', 'jp', 'fr', 'de', 'us', 'au', 'cn', 'in', 'it',
+    'es', 'ru', 'ca', 'kr', 'mx', 'za', 'nl', 'ar', 'pl', 'nz',
+    'se', 'ch', 'pt', 'gr', 'tr', 'no', 'be', 'fi', 'ie'
+}
+
+def extract_domain(url: str) -> str:
+    parsed_url = urlparse(url)
+    hostname = parsed_url.hostname
+
+    if hostname is None:
+        raise ValueError(f"Hostname is None for URL: {url}")
+
+    parts = hostname.lower().split('.')
+
+    if len(parts) < 2:
+        return hostname
+
+    if parts[-1] in ccTLDs and len(parts) >= 3:
+        return '.'.join(parts[-3:])
+    else:
+        return '.'.join(parts[-2:])
+
+
 if __name__ == "__main__":
     print(normalize_url("https://www.api.ciano.io/?id=10&ad=True"), normalize_url("https://ciano.io/olha-aqui/?ad=True&id=10&"))
+    print(extract_domain("https://www.redetv.uol.com.br/"))
