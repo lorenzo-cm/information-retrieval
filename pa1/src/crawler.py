@@ -67,6 +67,8 @@ class Crawler:
                 if url in self.visited or url == '':
                     continue
                 
+                self.visited.add(normalize_url(url))
+                
                 can, time_wait = can_crawl(url)
                 if not can:
                     continue
@@ -74,8 +76,6 @@ class Crawler:
                 wait_if_needed(url, time_wait)
 
                 html, inlinks, outlinks = crawl(url, self.debug)
-                
-                self.visited.add(normalize_url(url))
                 
                 with self.lock_storage:
                     self.storage.add(url, html)

@@ -14,7 +14,7 @@ def can_crawl(url: str) -> tuple[bool, float]:
     # print(f"can crawl: {url}, urlJoin: {urljoin(base_url, "/robots.txt")}")
     
     if base_url not in robots_cache:
-        response = requests.get(urljoin(base_url, "/robots.txt"), timeout=5)
+        response = requests.get(urljoin(base_url, "/robots.txt"), timeout=10)
         if 400 <= response.status_code < 600:
             return True, DEFAULT_CRAWL_DELAY
         # response.raise_for_status() # vou assumir que se n tem 'e valido

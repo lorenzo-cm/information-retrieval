@@ -1,6 +1,8 @@
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 import posixpath
 
+from src.utils.errors import MissingHostnameError
+
 def normalize_url(url: str) -> str:
     parsed = urlparse(url)
 
@@ -38,7 +40,7 @@ def extract_domain(url: str) -> str:
     hostname = parsed_url.hostname
 
     if hostname is None:
-        raise ValueError(f"Hostname is None for URL: {url}")
+        raise MissingHostnameError(url)
 
     parts = hostname.lower().split('.')
 

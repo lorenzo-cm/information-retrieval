@@ -3,6 +3,8 @@ from urllib.parse import ParseResult, urlparse, urljoin
 import requests
 import time
 
+from src.utils.errors import NotHTMLError
+
 # { "URL": " https :// g1. globo .com/",
 # " Title ": "G1 - O portal de not´ı cias da Globo ",
 # " Text ": " Deseja receber as not´ı cias mais importantes em
@@ -14,7 +16,7 @@ def crawl(url: str, debug: bool) -> tuple[str, set[str], set[str]]:
     response = requests.get(url, timeout=10)
     response.raise_for_status()
     if 'text/html' not in response.headers.get('Content-Type', ''):
-        raise ValueError(f'text/html not found in response: {response.headers}')
+        raise NotHTMLError(url)
     html = response.text
     
     soup = BeautifulSoup(html, 'html.parser')
