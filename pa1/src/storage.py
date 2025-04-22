@@ -2,7 +2,6 @@ import time
 import gzip
 import os
 from warcio.warcwriter import WARCWriter
-from warcio.statusandheaders import StatusAndHeaders
 from io import BytesIO
 
 class Storage:
@@ -28,7 +27,7 @@ class Storage:
         with gzip.open(warc_path, "wb") as stream:
             writer = WARCWriter(stream, gzip=True)
 
-            for page in self.page_buffer:
+            for page in self.page_buffer: 
                 payload = page["html"].encode("utf-8")
 
                 record = writer.create_warc_record(
