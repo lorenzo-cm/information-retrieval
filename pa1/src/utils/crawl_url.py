@@ -13,6 +13,12 @@ from src.utils.errors import NotHTMLError
 # " Timestamp ": 1649945049 }
 
 def crawl(url: str, debug: bool) -> tuple[str, set[str], set[str]]:
+    """Função principal de crawl
+    
+    A função coleta apenas HTML, de maneira a extrair o conteúdo da página e os links (referências).
+    
+    Os links são classificados como inlinks ou outlinks
+    """
     response = requests.get(url, timeout=10)
     response.raise_for_status()
     if 'text/html' not in response.headers.get('Content-Type', ''):
@@ -39,6 +45,7 @@ def crawl(url: str, debug: bool) -> tuple[str, set[str], set[str]]:
 
 
 def _extract_links(soup: BeautifulSoup, url: str) -> tuple[set[str], set[str]]:
+    """Essa função realiza a extração dos links e a classificação deles em inlinks e outlinks"""
     inlinks: set = set()
     outlinks: set = set()
     

@@ -4,6 +4,7 @@ import posixpath
 from src.utils.errors import MissingHostnameError
 
 def normalize_url(url: str) -> str:
+    """Normaliza a url para um formato padrão"""
     parsed = urlparse(url)
 
     # minusculo
@@ -29,6 +30,7 @@ def normalize_url(url: str) -> str:
     return normalized.lstrip('/')
 
 
+# Identificação das TLDs para parsing
 ccTLDs = {
     'br', 'uk', 'jp', 'fr', 'de', 'us', 'au', 'cn', 'in', 'it',
     'es', 'ru', 'ca', 'kr', 'mx', 'za', 'nl', 'ar', 'pl', 'nz',
@@ -36,6 +38,7 @@ ccTLDs = {
 }
 
 def extract_domain(url: str) -> str:
+    """Extrair somente o domínio principal sem o subdomínio"""
     parsed_url = urlparse(url)
     hostname = parsed_url.hostname
 

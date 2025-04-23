@@ -8,6 +8,7 @@ DEFAULT_CRAWL_DELAY = 0.1
 robots_cache: dict = {}
 
 def can_crawl(url: str) -> tuple[bool, float]:
+    """Verifica se a página pode ser coletada e qual o tempo que devo esperar para coletá-la novamente"""
     parsed: ParseResult = urlparse(url)
     base_url = f"{parsed.scheme}://{parsed.netloc}"
     
@@ -32,6 +33,7 @@ def can_crawl(url: str) -> tuple[bool, float]:
 last_request: dict = {}
 
 def wait_if_needed(url: str, crawl_delay: float):
+    """Verifica se é necessário esperar antes de enviar uma nova requisição, caso precise, então a função espera"""
     parsed: ParseResult = urlparse(url)
     base_url = parsed.netloc
     

@@ -39,8 +39,10 @@ class Crawler:
         self.storage = Storage()
         self.lock_storage = threading.Lock()
         
+        # Seed for reproducibility
         self._set_seed()
         
+        # Progress log config
         self.log_freq = self.limit//20 if self.limit>=20 else self.limit
         
     def run(self):
@@ -59,6 +61,7 @@ class Crawler:
 
                 url: str = ''
                 
+                # Essa função contem o teste de probabilidade
                 if self._should_explore_new_domains_and_not_empty():
                     url = self.new_domains_frontier.get()
                 else:
